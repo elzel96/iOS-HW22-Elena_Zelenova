@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		79C5D8812B56001B00E6B21E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C5D8802B56001B00E6B21E /* AppDelegate.swift */; };
 		79C5D8832B56001B00E6B21E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C5D8822B56001B00E6B21E /* SceneDelegate.swift */; };
-		79C5D8852B56001B00E6B21E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C5D8842B56001B00E6B21E /* ViewController.swift */; };
+		79C5D8852B56001B00E6B21E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C5D8842B56001B00E6B21E /* MainViewController.swift */; };
 		79C5D88B2B56001B00E6B21E /* iOS_HW22_Elena_Zelenova.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 79C5D8892B56001B00E6B21E /* iOS_HW22_Elena_Zelenova.xcdatamodeld */; };
 		79C5D88D2B56001C00E6B21E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79C5D88C2B56001C00E6B21E /* Assets.xcassets */; };
 		79C5D8902B56001C00E6B21E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 79C5D88E2B56001C00E6B21E /* LaunchScreen.storyboard */; };
-		79C5D89D2B5603D300E6B21E /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C5D89C2B5603D300E6B21E /* Presenter.swift */; };
+		79C5D89D2B5603D300E6B21E /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C5D89C2B5603D300E6B21E /* MainPresenter.swift */; };
 		79C5D89F2B56041A00E6B21E /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C5D89E2B56041A00E6B21E /* DetailViewController.swift */; };
 		79C5D8A12B56042900E6B21E /* DetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C5D8A02B56042900E6B21E /* DetailPresenter.swift */; };
 		79C5D8A42B56047400E6B21E /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C5D8A32B56047400E6B21E /* CoreDataManager.swift */; };
@@ -23,12 +23,12 @@
 		79C5D87D2B56001B00E6B21E /* iOS-HW22-Elena_Zelenova.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS-HW22-Elena_Zelenova.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		79C5D8802B56001B00E6B21E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		79C5D8822B56001B00E6B21E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		79C5D8842B56001B00E6B21E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		79C5D8842B56001B00E6B21E /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		79C5D88A2B56001B00E6B21E /* iOS_HW22_Elena_Zelenova.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iOS_HW22_Elena_Zelenova.xcdatamodel; sourceTree = "<group>"; };
 		79C5D88C2B56001C00E6B21E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		79C5D88F2B56001C00E6B21E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		79C5D8912B56001C00E6B21E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		79C5D89C2B5603D300E6B21E /* Presenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Presenter.swift; sourceTree = "<group>"; };
+		79C5D89C2B5603D300E6B21E /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
 		79C5D89E2B56041A00E6B21E /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		79C5D8A02B56042900E6B21E /* DetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPresenter.swift; sourceTree = "<group>"; };
 		79C5D8A32B56047400E6B21E /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -104,8 +104,8 @@
 		79C5D89A2B56038A00E6B21E /* MainScreen */ = {
 			isa = PBXGroup;
 			children = (
-				79C5D8842B56001B00E6B21E /* ViewController.swift */,
-				79C5D89C2B5603D300E6B21E /* Presenter.swift */,
+				79C5D8842B56001B00E6B21E /* MainViewController.swift */,
+				79C5D89C2B5603D300E6B21E /* MainPresenter.swift */,
 			);
 			path = MainScreen;
 			sourceTree = "<group>";
@@ -198,13 +198,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				79C5D88B2B56001B00E6B21E /* iOS_HW22_Elena_Zelenova.xcdatamodeld in Sources */,
-				79C5D8852B56001B00E6B21E /* ViewController.swift in Sources */,
+				79C5D8852B56001B00E6B21E /* MainViewController.swift in Sources */,
 				79C5D8812B56001B00E6B21E /* AppDelegate.swift in Sources */,
 				79C5D89F2B56041A00E6B21E /* DetailViewController.swift in Sources */,
 				79C5D8832B56001B00E6B21E /* SceneDelegate.swift in Sources */,
 				79C5D8A12B56042900E6B21E /* DetailPresenter.swift in Sources */,
 				79C5D8A42B56047400E6B21E /* CoreDataManager.swift in Sources */,
-				79C5D89D2B5603D300E6B21E /* Presenter.swift in Sources */,
+				79C5D89D2B5603D300E6B21E /* MainPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,7 +348,6 @@
 				INFOPLIST_FILE = "iOS-HW22-Elena_Zelenova/Resources/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -376,7 +375,6 @@
 				INFOPLIST_FILE = "iOS-HW22-Elena_Zelenova/Resources/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
