@@ -1,8 +1,10 @@
 import UIKit
 
-class MainViewController: UIViewController {
+protocol PresenterView: AnyObject {}
+
+class MainViewController: UIViewController, PresenterView {
     
- //   var mainPresenter: MainPresenter?
+    lazy var presenter = MainPresenter(view: self)
     
     // MARK: - UI Elements
     
@@ -15,26 +17,26 @@ class MainViewController: UIViewController {
         return textField
     }()
     
-    private let button: UIButton = {
-        let button = UIButton()
+    private lazy var button: UIButton = {
+        let button = UIButton(type: .system)
         button.setTitle("Press", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 18)
         button.layer.cornerRadius = 11
         button.backgroundColor = .systemBlue
-        //button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-//    private lazy var tableView: UITableView = {
-//        let tableView = UITableView(frame: .zero, style: .insetGrouped)
-//        //tableView.register(TableCell.self, forCellReuseIdentifier: "cell")
-//        tableView.delegate = self
-//        tableView.dataSource = self
-//        tableView.translatesAutoresizingMaskIntoConstraints = false
-//        return tableView
-//    }()
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
     
     // MARK: - Life Cycle
     
@@ -52,11 +54,14 @@ class MainViewController: UIViewController {
         title = "Users"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.backBarButtonItem?.tintColor = .gray
+        
+        presenter.fetchAllUsers()
+        tableView.reloadData()
     }
     
     private func setupHierarchy() {
         view.addSubview(textField)
-//        view.addSubview(tableView)
+        view.addSubview(tableView)
         view.addSubview(button)
     }
     
@@ -66,24 +71,32 @@ class MainViewController: UIViewController {
             textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             textField.heightAnchor.constraint(equalToConstant: 50),
-
+            
             button.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 15),
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             button.heightAnchor.constraint(equalToConstant: 50),
             
-//            tableView.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 10),
-//            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-//            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-//            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            tableView.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 10),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
         ])
     }
     
     // MARK: - Actions
     
-    //    @objc private func buttonPressed {
-    //
-    //    }
+    @objc private func buttonPressed() {
+        if let text = textField.text {
+            
+            if text.rangeOfCharacter(from: CharacterSet.letters) != nil {
+                
+                presenter.createNewUser(withName: text)
+                presenter.fetchAllUsers()
+                self.tableView.reloadData()
+            }
+        }
+    }
 }
 
 // MARK: - Extensions
@@ -91,37 +104,37 @@ class MainViewController: UIViewController {
 extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-//        let viewController = DetailController()
-//        if let detailModel = model?[indexPath.row] {
-//            viewController.detailView.model = detailModel
-//        }
-//        navigationController?.pushViewController(viewController, animated: true)
+        presenter.showDetails(user: presenter.users[indexPath.row], navigationController: navigationController ?? UINavigationController())
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let user = presenter.users[indexPath.row]
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {_,_,_ in 
+            self.presenter.deleteUser(user)
+            self.presenter.fetchAllUsers()
+            self.tableView.reloadData()
+        }
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
     }
 }
 
-//extension MainViewController: UITableViewDataSource {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        <#code#>
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        <#code#>
-//    }
+extension MainViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        presenter.users.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.accessoryType = .disclosureIndicator
+        cell.textLabel?.text = presenter.users[indexPath.row].name
+        return cell
+    }
     
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        model?.count ?? 0
-//    }
-    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? MarvelCell
-//        if let cellModel = model?[indexPath.row] {
-//            cell?.model = cellModel
-//        }
-//        return cell ?? UITableViewCell()
-//    }
-    
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 50
-//    }
-//}
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+}
 
