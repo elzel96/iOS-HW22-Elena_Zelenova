@@ -47,13 +47,16 @@ class MainViewController: UIViewController, PresenterView {
         setupLayout()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        title = "Users"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.backBarButtonItem?.tintColor = .gray
+    }
+    
     // MARK: - Setups
     
     private func setupView() {
         view.backgroundColor = .secondarySystemBackground
-        title = "Users"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.backBarButtonItem?.tintColor = .gray
         
         presenter.fetchAllUsers()
         tableView.reloadData()

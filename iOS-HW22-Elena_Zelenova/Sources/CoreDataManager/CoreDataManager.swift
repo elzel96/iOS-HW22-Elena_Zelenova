@@ -49,8 +49,9 @@ class CoreDataManager {
         }
     }
     
-    func deleteUser(user: User) {
+    func deleteUser(_ user: User) {
         viewContext.delete(user)
+        saveContext ()
     }
     
     func saveContext () {
