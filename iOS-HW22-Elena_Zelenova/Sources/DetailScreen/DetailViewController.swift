@@ -7,6 +7,7 @@ protocol DetailPresenterView: AnyObject {
 class DetailViewController: UIViewController, DetailPresenterView {
     
     var presenter: DetailPresenter?
+    private var isEdited = false
     
     // MARK: - UI Elements
     
@@ -30,7 +31,7 @@ class DetailViewController: UIViewController, DetailPresenterView {
         button.backgroundColor = .white
         button.layer.borderColor = UIColor.black.cgColor
         button.layer.borderWidth = 1
-        //button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(editButtonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -157,12 +158,29 @@ class DetailViewController: UIViewController, DetailPresenterView {
     
     func setUser(_ user: User) {
         nameTextField.text = presenter?.user.name
+        bdayTextField.text = presenter?.user.bdayDate
+        genderTextField.text = presenter?.user.gender
     }
     
     // MARK: - Actions
     
-    //    @objc private func buttonPressed {
-    //
-    //    }
+    @objc private func editButtonPressed() {
+        
+        isEdited.toggle()
+        if isEdited {
+            editButton.setTitle("Save", for: .normal)
+            editButton.backgroundColor = UIColor.init(cgColor: CGColor(red: 1.000, green: 0.502, blue: 0.502, alpha: 1.000))
+            nameTextField.isUserInteractionEnabled = true
+            bdayTextField.isUserInteractionEnabled = true
+            genderTextField.isUserInteractionEnabled = true
+        } else {
+            editButton.setTitle("Edit", for: .normal)
+            editButton.backgroundColor = .white
+            nameTextField.isUserInteractionEnabled = false
+            presenter?.user.name = nameTextField.text
+            bdayTextField.isUserInteractionEnabled = false
+            genderTextField.isUserInteractionEnabled = false
+        }
+    }
 }
 
