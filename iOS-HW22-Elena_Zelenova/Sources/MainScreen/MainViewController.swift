@@ -92,14 +92,23 @@ class MainViewController: UIViewController, PresenterView {
     
     @objc private func buttonPressed() {
         if let text = textField.text {
-            
             if text.rangeOfCharacter(from: CharacterSet.letters) != nil {
-                
                 presenter.createNewUser(withName: text)
                 presenter.fetchAllUsers()
                 self.tableView.reloadData()
+            } else if text.rangeOfCharacter(from: CharacterSet.letters) == nil {
+                DispatchQueue.main.async {
+                    self.showAlert()
+                }
             }
         }
+    }
+    
+    private func showAlert() {
+        let alertController = UIAlertController(title: "Incorrect name", message: "Please write down your name before registration using letters", preferredStyle: .alert)
+        
+        alertController.addAction(UIAlertAction(title: "Ok", style: .cancel))
+        self.present(alertController, animated: true)
     }
 }
 
