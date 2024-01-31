@@ -209,6 +209,9 @@ class DetailViewController: UIViewController, DetailPresenterView {
     }
     
     func setUser(_ user: User) {
+        if let ava = presenter?.user.avatar {
+            image.image = UIImage(data: ava)
+        }
         nameTextField.text = presenter?.user.name
         bdayTextField.text = presenter?.user.bdayDate
         genderTextField.text = presenter?.user.gender
