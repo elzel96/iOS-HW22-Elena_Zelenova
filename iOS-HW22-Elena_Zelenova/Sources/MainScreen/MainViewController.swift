@@ -19,7 +19,7 @@ class MainViewController: UIViewController, PresenterView {
     
     private lazy var button: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Press", for: .normal)
+        button.setTitle("Register", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 18)
         button.layer.cornerRadius = 11
@@ -47,13 +47,17 @@ class MainViewController: UIViewController, PresenterView {
         setupLayout()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        title = "Users"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.backBarButtonItem?.tintColor = .gray
+        tableView.reloadData()
+    }
+    
     // MARK: - Setups
     
     private func setupView() {
         view.backgroundColor = .secondarySystemBackground
-        title = "Users"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.backBarButtonItem?.tintColor = .gray
         
         presenter.fetchAllUsers()
         tableView.reloadData()
