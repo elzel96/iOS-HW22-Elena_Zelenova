@@ -229,6 +229,14 @@ class DetailViewController: UIViewController, DetailPresenterView {
             genderTextField.isUserInteractionEnabled = true
             image.isUserInteractionEnabled = true
         } else {
+            if let text = nameTextField.text {
+                guard let name = text.rangeOfCharacter(from: CharacterSet.letters) else {
+                    DispatchQueue.main.async {
+                        self.showAlert()
+                    }
+                    return
+                }
+            }
             editButton.setTitle("Edit", for: .normal)
             editButton.backgroundColor = .white
             nameTextField.isUserInteractionEnabled = false
@@ -261,6 +269,13 @@ class DetailViewController: UIViewController, DetailPresenterView {
         imagePicker.sourceType = .photoLibrary
         imagePicker.allowsEditing = true
         present(imagePicker, animated: true)
+    }
+    
+    private func showAlert() {
+        let alertController = UIAlertController(title: "Incorrect name", message: "Please write down your name before registration using letters", preferredStyle: .alert)
+        
+        alertController.addAction(UIAlertAction(title: "Ok", style: .cancel))
+        self.present(alertController, animated: true)
     }
 }
 
@@ -298,3 +313,4 @@ extension DetailViewController: UIImagePickerControllerDelegate, UINavigationCon
         dismiss(animated: true, completion: nil)
     }
 }
+
