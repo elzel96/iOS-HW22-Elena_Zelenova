@@ -7,11 +7,15 @@ protocol DetailPresenterView: AnyObject {
 class DetailViewController: UIViewController, DetailPresenterView {
     
     var presenter: DetailPresenter?
-    private var isEdited = false
+    private var isEditeMode = false
+    private let datePicker = UIDatePicker()
+    private let genderPicker = UIPickerView()
+    private let genders = ["Male", "Female", "Other"]
+    private var avatar: Data? = nil
     
     // MARK: - UI Elements
     
-    private let image: UIImageView = {
+    private var image: UIImageView = {
         let imageContainer = UIImageView(frame: CGRect(x: 45, y: 150, width: 300, height: 300))
         imageContainer.layer.cornerRadius = 150
         imageContainer.layer.borderColor = UIColor.black.cgColor
@@ -19,6 +23,7 @@ class DetailViewController: UIViewController, DetailPresenterView {
         imageContainer.image = UIImage(systemName: "person.fill")
         imageContainer.tintColor = UIColor.init(cgColor: CGColor(red: 1.000, green: 0.502, blue: 0.502, alpha: 1.000))
         imageContainer.clipsToBounds = true
+        imageContainer.isUserInteractionEnabled = false
         return imageContainer
     }()
     
@@ -115,6 +120,9 @@ class DetailViewController: UIViewController, DetailPresenterView {
         setupHierarchy()
         setupLayout()
         presenter?.fetchUser()
+        setupDatePicker()
+        setupGenderPicker()
+        setupImagePicker()
     }
     
     // MARK: - Setups
@@ -130,6 +138,50 @@ class DetailViewController: UIViewController, DetailPresenterView {
         view.addSubview(nameTextField)
         view.addSubview(bdayTextField)
         view.addSubview(genderTextField)
+    }
+    
+    private func setupDatePicker() {
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .wheels
+        datePicker.frame = CGRect(x: 0, y: 0, width: 300, height: 192)
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+        bdayTextField.inputView = datePicker
+        
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+        doneButton.tintColor = .black
+        toolbar.setItems([doneButton], animated: false)
+        bdayTextField.inputAccessoryView = toolbar
+    }
+    
+    private func setupGenderPicker() {
+        genderPicker.dataSource = self
+        genderPicker.delegate = self
+        genderPicker.frame = CGRect(x: 0, y: 0, width: 300, height: 192)
+        genderTextField.inputView = genderPicker
+        
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(genderChosen))
+        doneButton.tintColor = .black
+        toolbar.setItems([doneButton], animated: false)
+        genderTextField.inputAccessoryView = toolbar
+    }
+    
+    private func setupImagePicker() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
+        image.addGestureRecognizer(tapGesture)
+    }
+    
+    private func saveInfo() {
+        if let user = presenter?.user {
+            presenter?.updateUser(user: user,
+                                  image: avatar,
+                                  name: nameTextField.text,
+                                  bDay: bdayTextField.text,
+                                  gender: genderTextField.text)
+        }
     }
     
     private func setupLayout() {
@@ -165,22 +217,81 @@ class DetailViewController: UIViewController, DetailPresenterView {
     // MARK: - Actions
     
     @objc private func editButtonPressed() {
-        
-        isEdited.toggle()
-        if isEdited {
+        isEditeMode.toggle()
+        if isEditeMode {
             editButton.setTitle("Save", for: .normal)
             editButton.backgroundColor = UIColor.init(cgColor: CGColor(red: 1.000, green: 0.502, blue: 0.502, alpha: 1.000))
             nameTextField.isUserInteractionEnabled = true
             bdayTextField.isUserInteractionEnabled = true
             genderTextField.isUserInteractionEnabled = true
+            image.isUserInteractionEnabled = true
         } else {
             editButton.setTitle("Edit", for: .normal)
             editButton.backgroundColor = .white
             nameTextField.isUserInteractionEnabled = false
-            presenter?.user.name = nameTextField.text
             bdayTextField.isUserInteractionEnabled = false
             genderTextField.isUserInteractionEnabled = false
+            image.isUserInteractionEnabled = false
         }
+        saveInfo()
+    }
+    
+    @objc private func datePickerValueChanged() {
+        let selectedDate = datePicker.date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        bdayTextField.text = dateFormatter.string(from: selectedDate)
+    }
+    
+    @objc private func doneButtonTapped() {
+        bdayTextField.resignFirstResponder()
+    }
+    
+    @objc private func genderChosen() {
+        genderTextField.resignFirstResponder()
+    }
+    
+    @objc private func imageTapped() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true)
     }
 }
 
+// MARK: - Extensions
+
+extension DetailViewController: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+            return genders[row]
+        }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        genderTextField.text = genders[row]
+    }
+}
+
+extension DetailViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return genders.count
+    }
+}
+
+extension DetailViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            image.image = pickedImage
+            
+            DispatchQueue.main.async {
+                self.avatar = pickedImage.pngData()
+            }
+        }
+        dismiss(animated: true, completion: nil)
+    }
+}
