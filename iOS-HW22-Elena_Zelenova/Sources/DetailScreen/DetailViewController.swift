@@ -66,7 +66,7 @@ class DetailViewController: UIViewController, DetailPresenterView {
     
     private let bdayTextField: UITextField = {
         let textField = UITextField()
-        textField.text = "Birthday"
+        textField.placeholder = "Birthday"
         textField.tintColor = .black
         textField.isUserInteractionEnabled = false
         
@@ -90,7 +90,7 @@ class DetailViewController: UIViewController, DetailPresenterView {
     
     private let genderTextField: UITextField = {
         let textField = UITextField()
-        textField.text = "Gender"
+        textField.placeholder = "Gender"
         textField.tintColor = .black
         textField.isUserInteractionEnabled = false
         
