@@ -1,28 +1,50 @@
-import UIKit
+import Foundation
+
+protocol MainViewOutput {
+    func createNewUser(withName: String)
+    func fetchAllUsers()
+    func deleteUser(_ user: User)
+}
+
+protocol MainViewInput: AnyObject {
+    func updateView(with users: [User])
+    func deleteUser(_ user: User)
+}
 
 class MainPresenter {
-    var users = [User]()
-    private weak var view: PresenterView?
+    
+    // MARK: - Elements
+    
+    private weak var view: MainViewInput?
     private let coreDataManager = CoreDataManager()
     
-    init(view: PresenterView) {
+    // MARK: - init
+    
+    init(view: MainViewInput) {
         self.view = view
     }
+}
     
+// MARK: - MainViewOutput
+
+extension MainPresenter: MainViewOutput {
     func createNewUser(withName: String) {
         coreDataManager.save(withName)
+        view?.updateView(with: coreDataManager.fetchAllUsers() ?? [])
     }
     
     func fetchAllUsers() {
-        users = coreDataManager.fetchAllUsers() ?? []
+        guard let users = coreDataManager.fetchAllUsers() else { return }
+        view?.updateView(with: users)
     }
     
     func deleteUser(_ user: User) {
         coreDataManager.deleteUser(user)
+        view?.deleteUser(user)
     }
     
-    func showDetails(user: User, navigationController: UINavigationController) {
-        let viewController = DetailAssembly.configureModule(forUser: user)
-        navigationController.pushViewController(viewController, animated: true)
-    }
+//    func showDetails(user: User, navigationController: UINavigationController) {
+//        let viewController = DetailAssembly.configureModule(forUser: user)
+//        navigationController.pushViewController(viewController, animated: true)
+//    }
 }

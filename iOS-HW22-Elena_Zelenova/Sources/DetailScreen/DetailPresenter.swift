@@ -1,5 +1,7 @@
 import Foundation
 
+protocol DetailPresenterView: AnyObject {}
+
 protocol DetailPresenterType {
     var view: DetailPresenterView? { get set }
     var user: User? { get set }

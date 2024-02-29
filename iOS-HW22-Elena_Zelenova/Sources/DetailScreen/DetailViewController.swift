@@ -1,12 +1,16 @@
 import UIKit
 
-protocol DetailPresenterView: AnyObject {
-    func setUser(_ user: User)
-}
+//protocol DetailPresenterView: AnyObject {
+//    func setUser(_ user: User)
+//}
+
+protocol DetailPresenterView: AnyObject {}
 
 class DetailViewController: UIViewController, DetailPresenterView {
     
-    var presenter: DetailPresenter?
+    var presenter: DetailViewOutput?
+   // private var users = [User]()
+    
     private var isEditeMode = false
     private let datePicker = UIDatePicker()
     private let genderPicker = UIPickerView()
@@ -119,7 +123,7 @@ class DetailViewController: UIViewController, DetailPresenterView {
         setupView()
         setupHierarchy()
         setupLayout()
-        presenter?.fetchUser()
+       // presenter?.fetchUser()
         setupDatePicker()
         setupGenderPicker()
         setupImagePicker()
@@ -208,8 +212,8 @@ class DetailViewController: UIViewController, DetailPresenterView {
         ])
     }
     
-    func setUser(_ user: User) {
-        if let ava = presenter?.user.avatar {
+    func setUser() {
+        if let ava = presenter?.fetchUser().avatar {
             image.image = UIImage(data: ava)
         }
         nameTextField.text = presenter?.user.name
@@ -279,7 +283,7 @@ class DetailViewController: UIViewController, DetailPresenterView {
     }
 }
 
-// MARK: - Extensions
+// MARK: - UIPickerViewDelegate
 
 extension DetailViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
@@ -291,6 +295,8 @@ extension DetailViewController: UIPickerViewDelegate {
     }
 }
 
+// MARK: - UIPickerViewDataSource
+
 extension DetailViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -300,6 +306,8 @@ extension DetailViewController: UIPickerViewDataSource {
         return genders.count
     }
 }
+
+// MARK: - UIImagePickerControllerDelegate
 
 extension DetailViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {

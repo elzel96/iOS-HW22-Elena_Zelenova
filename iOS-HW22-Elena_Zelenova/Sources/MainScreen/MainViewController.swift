@@ -4,7 +4,8 @@ protocol PresenterView: AnyObject {}
 
 class MainViewController: UIViewController, PresenterView {
     
-    lazy var presenter = MainPresenter(view: self)
+    var presenter: MainViewOutput?
+    private var users = [User]()
     
     // MARK: - UI Elements
     
@@ -93,10 +94,10 @@ class MainViewController: UIViewController, PresenterView {
     @objc private func buttonPressed() {
         if let text = textField.text {
             if text.rangeOfCharacter(from: CharacterSet.letters) != nil {
-                presenter.createNewUser(withName: text)
-                presenter.fetchAllUsers()
+                presenter?.createNewUser(withName: text)
+                textField.text?.removeAll()
                 self.tableView.reloadData()
-            } else if text.rangeOfCharacter(from: CharacterSet.letters) == nil {
+            } else {
                 DispatchQueue.main.async {
                     self.showAlert()
                 }
@@ -112,31 +113,57 @@ class MainViewController: UIViewController, PresenterView {
     }
 }
 
-// MARK: - Extensions
+// MARK: - MainViewInput
+
+extension MainViewController: MainViewInput {
+    func updateView(with users: [User]) {
+        self.users = users
+        tableView.reloadData()
+    }
+    
+    func deleteUser(_ user: User) {
+        users.removeAll(where: { $0 == user })
+        tableView.reloadData()
+    }
+}
+
+// MARK: - UITableViewDelegate
 
 extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        presenter.showDetails(user: presenter.users[indexPath.row], navigationController: navigationController ?? UINavigationController())
-        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let viewController = DetailAssembly.configureModule(forUser: users[indexPath.row])
+        navigationController?.pushViewController(viewController, animated: true)
+        
+//        presenter.showDetails(user: presenter.users[indexPath.row], navigationController: navigationController ?? UINavigationController())
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let user = presenter.users[indexPath.row]
         
-        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {_,_,_ in 
-            self.presenter.deleteUser(user)
-            self.presenter.fetchAllUsers()
-            self.tableView.reloadData()
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { _, _, _ in
+            self.presenter?.deleteUser(self.users[indexPath.row])
         }
+//        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {_,_,_ in
+//            self.presenter.deleteUser(user)
+//            self.presenter.fetchAllUsers()
+//            self.tableView.reloadData()
+//        }
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         return configuration
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
 }
+
+// MARK: - UITableViewDataSource
 
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        presenter.users.count
+        users.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -144,10 +171,6 @@ extension MainViewController: UITableViewDataSource {
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = presenter.users[indexPath.row].name
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
     }
 }
 
