@@ -179,10 +179,10 @@ class DetailViewController: UIViewController {
     }
     
     private func saveInfo() {
-            presenter?.updateUser(image: avatar,
-                                  name: nameTextField.text,
-                                  bDay: bdayTextField.text,
-                                  gender: genderTextField.text)
+        presenter?.updateUser(image: avatar,
+                              name: nameTextField.text,
+                              bDay: bdayTextField.text,
+                              gender: genderTextField.text)
     }
     
     private func setupLayout() {
