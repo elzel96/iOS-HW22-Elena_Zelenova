@@ -1,16 +1,7 @@
 import UIKit
 
-//protocol DetailPresenterView: AnyObject {
-//    func setUser(_ user: User)
-//}
-
-protocol DetailPresenterView: AnyObject {}
-
-class DetailViewController: UIViewController, DetailPresenterView {
-    
+class DetailViewController: UIViewController {
     var presenter: DetailViewOutput?
-   // private var users = [User]()
-    
     private var isEditeMode = false
     private let datePicker = UIDatePicker()
     private let genderPicker = UIPickerView()
@@ -123,7 +114,7 @@ class DetailViewController: UIViewController, DetailPresenterView {
         setupView()
         setupHierarchy()
         setupLayout()
-       // presenter?.fetchUser()
+        setupData()
         setupDatePicker()
         setupGenderPicker()
         setupImagePicker()
@@ -134,6 +125,15 @@ class DetailViewController: UIViewController, DetailPresenterView {
     private func setupView() {
         view.backgroundColor = .white
         navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    
+    private func setupData() {
+        if let ava = presenter?.fetchUser().avatar {
+            image.image = UIImage(data: ava)
+        }
+        nameTextField.text = presenter?.fetchUser().name
+        bdayTextField.text = presenter?.fetchUser().bdayDate
+        genderTextField.text = presenter?.fetchUser().gender
     }
     
     private func setupHierarchy() {
@@ -179,13 +179,10 @@ class DetailViewController: UIViewController, DetailPresenterView {
     }
     
     private func saveInfo() {
-        if let user = presenter?.user {
-            presenter?.updateUser(user: user,
-                                  image: avatar,
+            presenter?.updateUser(image: avatar,
                                   name: nameTextField.text,
                                   bDay: bdayTextField.text,
                                   gender: genderTextField.text)
-        }
     }
     
     private func setupLayout() {
@@ -212,15 +209,6 @@ class DetailViewController: UIViewController, DetailPresenterView {
         ])
     }
     
-    func setUser() {
-        if let ava = presenter?.fetchUser().avatar {
-            image.image = UIImage(data: ava)
-        }
-        nameTextField.text = presenter?.user.name
-        bdayTextField.text = presenter?.user.bdayDate
-        genderTextField.text = presenter?.user.gender
-    }
-    
     // MARK: - Actions
     
     @objc private func editButtonPressed() {
@@ -234,7 +222,7 @@ class DetailViewController: UIViewController, DetailPresenterView {
             image.isUserInteractionEnabled = true
         } else {
             if let text = nameTextField.text {
-                guard let name = text.rangeOfCharacter(from: CharacterSet.letters) else {
+                guard text.rangeOfCharacter(from: CharacterSet.letters) != nil else {
                     DispatchQueue.main.async {
                         self.showAlert()
                     }
@@ -283,7 +271,7 @@ class DetailViewController: UIViewController, DetailPresenterView {
     }
 }
 
-// MARK: - UIPickerViewDelegate
+// MARK: - Extensions
 
 extension DetailViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
@@ -295,8 +283,6 @@ extension DetailViewController: UIPickerViewDelegate {
     }
 }
 
-// MARK: - UIPickerViewDataSource
-
 extension DetailViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -306,8 +292,6 @@ extension DetailViewController: UIPickerViewDataSource {
         return genders.count
     }
 }
-
-// MARK: - UIImagePickerControllerDelegate
 
 extension DetailViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -320,5 +304,11 @@ extension DetailViewController: UIImagePickerControllerDelegate, UINavigationCon
         }
         dismiss(animated: true, completion: nil)
     }
+}
+
+// MARK: - DetailViewInput
+
+extension DetailViewController: DetailViewInput {
+    
 }
 

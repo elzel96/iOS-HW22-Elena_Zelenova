@@ -39,7 +39,7 @@ class MainViewController: UIViewController, PresenterView {
         return tableView
     }()
     
-    // MARK: - Life Cycle
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,7 +60,7 @@ class MainViewController: UIViewController, PresenterView {
     private func setupView() {
         view.backgroundColor = .secondarySystemBackground
         
-        presenter.fetchAllUsers()
+        presenter?.fetchAllUsers()
         tableView.reloadData()
     }
     
@@ -96,7 +96,6 @@ class MainViewController: UIViewController, PresenterView {
             if text.rangeOfCharacter(from: CharacterSet.letters) != nil {
                 presenter?.createNewUser(withName: text)
                 textField.text?.removeAll()
-                self.tableView.reloadData()
             } else {
                 DispatchQueue.main.async {
                     self.showAlert()
@@ -135,21 +134,12 @@ extension MainViewController: UITableViewDelegate {
         
         let viewController = DetailAssembly.configureModule(forUser: users[indexPath.row])
         navigationController?.pushViewController(viewController, animated: true)
-        
-//        presenter.showDetails(user: presenter.users[indexPath.row], navigationController: navigationController ?? UINavigationController())
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let user = presenter.users[indexPath.row]
-        
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { _, _, _ in
             self.presenter?.deleteUser(self.users[indexPath.row])
         }
-//        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {_,_,_ in
-//            self.presenter.deleteUser(user)
-//            self.presenter.fetchAllUsers()
-//            self.tableView.reloadData()
-//        }
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         return configuration
     }
@@ -169,7 +159,7 @@ extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.accessoryType = .disclosureIndicator
-        cell.textLabel?.text = presenter.users[indexPath.row].name
+        cell.textLabel?.text = users[indexPath.row].name
         return cell
     }
 }

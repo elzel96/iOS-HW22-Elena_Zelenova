@@ -1,33 +1,32 @@
 import Foundation
 
-protocol DetailPresenterView: AnyObject {}
-
-protocol DetailPresenterType {
-    var view: DetailPresenterView? { get set }
-    var user: User? { get set }
-    var coreDataManager: CoreDataManager? { get set }
-    func updateUser(user: User,
-                    image: Data?,
+protocol DetailViewOutput {
+    func fetchUser() -> User
+    func updateUser(image: Data?,
                     name: String?,
                     bDay: String?,
                     gender: String?)
 }
 
-class DetailPresenter {
-    weak var view: DetailPresenterView?
-    var user = User()
+protocol DetailViewInput: AnyObject {
+    
+}
+
+class DetailPresenter: DetailViewOutput {
+    weak var view: DetailViewInput?
+    var user: User
     let coreDataManager = CoreDataManager()
     
-    init(view: DetailPresenterView) {
+    init(user: User, view: DetailViewInput) {
+        self.user = user
         self.view = view
     }
     
-    func fetchUser() {
-        view?.setUser(user)
+    func fetchUser() -> User {
+        user
     }
     
-    func updateUser(user: User,
-                    image: Data?,
+    func updateUser(image: Data?,
                     name: String?,
                     bDay: String?,
                     gender: String?) {

@@ -24,7 +24,7 @@ class MainPresenter {
         self.view = view
     }
 }
-    
+
 // MARK: - MainViewOutput
 
 extension MainPresenter: MainViewOutput {
@@ -42,9 +42,5 @@ extension MainPresenter: MainViewOutput {
         coreDataManager.deleteUser(user)
         view?.deleteUser(user)
     }
-    
-//    func showDetails(user: User, navigationController: UINavigationController) {
-//        let viewController = DetailAssembly.configureModule(forUser: user)
-//        navigationController.pushViewController(viewController, animated: true)
-//    }
 }
+

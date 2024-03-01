@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     }
     
-    func saveContext () {
+    func saveContext() {
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
@@ -45,4 +45,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 }
-
