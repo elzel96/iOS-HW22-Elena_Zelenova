@@ -3,20 +3,26 @@ import CoreData
 
 class CoreDataManager {
     var users: [NSManagedObject] = []
-    
     private let request: NSFetchRequest<User> = User.fetchRequest()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    func save(_ withName: String) {
-        let user = User(context: AppDelegate.viewContext)
+    func save(_ withName: String) -> Bool {
+        let user = User(context: context)
         user.name = withName
-        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        do {
+            try context.save()
+            return true
+        } catch {
+            print("Ошибка при cохранении пользователя: \(error), \(error.localizedDescription)")
+            return false
+        }
     }
     
     func updateUser(_ user: User,
                     _ image: Data?,
                     _ name: String?,
                     _ bDay: String?,
-                    _ gender: String?){
+                    _ gender: String?) -> Bool {
         if let image = image {
             user.avatar = image
         }
@@ -29,21 +35,34 @@ class CoreDataManager {
         if let gender = gender {
             user.gender = gender
         }
-        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        do {
+            try context.save()
+            return true
+        } catch {
+            print("Ошибка при обновлении пользователя: \(error), \(error.localizedDescription)")
+            return false
+        }
     }
     
     func fetchAllUsers() -> [User]? {
         do {
-            let users = try AppDelegate.viewContext.fetch(request)
+            let users = try context.fetch(request)
             return users
         } catch {
-            print(error)
+            print("Ошибка при загрузке данных: \(error), \(error.localizedDescription)")
             return nil
         }
     }
     
-    func deleteUser(_ user: User) {
-        AppDelegate.viewContext.delete(user)
-        (UIApplication.shared.delegate as! AppDelegate).saveContext ()
+    func deleteUser(_ user: User) -> Bool {
+        context.delete(user)
+        do {
+            try context.save()
+            return true
+        } catch {
+            print("Ошибка при удалении пользователя: \(error), \(error.localizedDescription)")
+            return false
+        }
     }
 }
+

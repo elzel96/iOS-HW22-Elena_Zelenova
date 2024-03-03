@@ -29,8 +29,9 @@ class MainPresenter {
 
 extension MainPresenter: MainViewOutput {
     func createNewUser(withName: String) {
-        coreDataManager.save(withName)
-        view?.updateView(with: coreDataManager.fetchAllUsers() ?? [])
+        if coreDataManager.save(withName) {
+            fetchAllUsers()
+        }
     }
     
     func fetchAllUsers() {
@@ -39,8 +40,10 @@ extension MainPresenter: MainViewOutput {
     }
     
     func deleteUser(_ user: User) {
-        coreDataManager.deleteUser(user)
-        view?.deleteUser(user)
+        if coreDataManager.deleteUser(user) {
+            //view?.deleteUser(user) это не надо тогда?
+            fetchAllUsers()
+        }
     }
 }
 

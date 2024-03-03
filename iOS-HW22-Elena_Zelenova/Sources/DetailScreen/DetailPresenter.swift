@@ -8,9 +8,7 @@ protocol DetailViewOutput {
                     gender: String?)
 }
 
-protocol DetailViewInput: AnyObject {
-    
-}
+protocol DetailViewInput: AnyObject { }
 
 class DetailPresenter: DetailViewOutput {
     weak var view: DetailViewInput?
